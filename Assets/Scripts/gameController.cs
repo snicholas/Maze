@@ -2,11 +2,11 @@
 using System.Collections;
 using MazeGeneration;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class gameController : MonoBehaviour
 {
 
-    public GameObject loadingPanel;
     public GameObject player;
     public GameObject mainCamera;
     public GameObject level;
@@ -14,25 +14,46 @@ public class gameController : MonoBehaviour
     private int currentLevel;
     public float wallOffsetX = 14.58F;
     public float wallOffsetY = 17.5F;
+
+    private playerController pController;
+    public int timePerRoom = 5;
+    private float elapsedTime = 0;
+    private float levelMaxTime = 5;
     private Maze maze = null;
     // Use this for initialization
     void Start()
     {
         currentLevel = 0;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        pController = player.GetComponent<playerController>();
+        currentLevel = gameManager.getInstance().getLevel();
+        pController.level = currentLevel;
         //generateNextLevel();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (pController.isInPlay)
+        {
+            elapsedTime += Time.deltaTime;
+            player.SendMessage("setTimeText", (int)((levelMaxTime - elapsedTime)));
+            if ((int)((levelMaxTime - elapsedTime)) <= 0)
+            {
+                gameManager.getInstance().setLevel(0);
+                gameManager.getInstance().setScore(pController.score);
+                gameManager.getInstance().setHp(0);
+                gameManager.getInstance().writeGameData(false);
+                SceneManager.LoadScene("gameOver");
+            }
+        }
     }
-
+    
     void generateNextLevel()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         currentLevel++;
+        pController.level = currentLevel;
         foreach (Transform child in level.transform)
         {
             Destroy(child.gameObject);
@@ -41,12 +62,12 @@ public class gameController : MonoBehaviour
         player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
         player.transform.position = new Vector2(0, 0);
         mainCamera.transform.position = new Vector3(0, 0, mainCamera.transform.position.z);
-        loadingPanel.SetActive(true);
         player.SetActive(false);
         level.SetActive(false);
-        loadingPanel.SetActive(false);
         player.SetActive(true);
         level.SetActive(true);
+        elapsedTime = 0;
+
     }
     void getNewXY(ref List<float> xUsed, ref List<float> yUsed, ref float newX, ref float newY)
     {
@@ -71,13 +92,12 @@ public class gameController : MonoBehaviour
             if (i % 2 == 0) { xSize++; }
             else { ySize++; }
         }
-
+        levelMaxTime = timePerRoom * xSize * ySize + timePerRoom;
         maze = new Maze(xSize, ySize);
         float xOff = 0;
         float yOff = 0;
         float sy = levels[1].GetComponent<Renderer>().bounds.size.y;
         float sx = levels[1].GetComponent<Renderer>().bounds.size.x;
-        Debug.Log("sx: " + sx + " sy: " + sy);
         int traps = xSize + ySize;
         int hrec = (int)(currentLevel * 0.1) + 1;
         bool levelEndPlaced = false;

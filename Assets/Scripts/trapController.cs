@@ -2,29 +2,58 @@
 using System.Collections;
 
 public class trapController : MonoBehaviour {
-    ParticleCollisionEvent[] collisionEvents;
-    ParticleSystem part;
     // ToDo: creare enum per tipi trappola
     public int type;
+    private SpriteRenderer spRnd;
+    private bool fadeIn = true;
+    private Color precColor;
     // Use this for initialization
-    void Start () {
-        part = GetComponent<ParticleSystem>();
-        collisionEvents = new ParticleCollisionEvent[16];
+    void Awake()
+    {
+        
+        spRnd = gameObject.GetComponent<SpriteRenderer>();
+        precColor = spRnd.color;
+        precColor.a = 0f;
+        spRnd.color = precColor;
+    }
+    // Use this for initialization
+    void Update () {
+        transform.Rotate(new Vector3(0, 0, 45) * Time.deltaTime);
+        if (fadeIn)
+        {
+            precColor.a += 0.5f * Time.deltaTime;
+            if (precColor.a >= 1)
+            {
+                precColor.a = 1f;
+                fadeIn = false;
+            }
+        }
+        if (!fadeIn)
+        {
+            precColor.a -= 0.75f * Time.deltaTime;
+            if (precColor.a <= 0)
+            {
+                precColor.a = 0f;
+                fadeIn = true;
+            }
+        }
+        spRnd.color = precColor;
     }
 
-    void OnParticleCollision(GameObject other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && precColor.a>=0.4)
         {
             if (type == 1)
             {
-                other.SendMessage("lifeUpDown", -10);
+                other.gameObject.SendMessage("lifeUpDown", -10);
                 Destroy(gameObject);
             }else if (type == 2)
             {
-                other.SendMessage("lifeUpDown", 10);
+                other.gameObject.SendMessage("lifeUpDown", 10);
                 Destroy(gameObject);
             }
         }
+        //Debug.Log("Trap trig");
     }
 }
