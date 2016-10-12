@@ -23,6 +23,7 @@ public class playerController : MonoBehaviour {
     void setTimeText(int sec)
     {
         timeTxt.text = "Time: " + sec.ToString();
+        timeTxt.color = new Color(0, 255, 23, 255);
         if (sec < 10)
         {
             timeTxt.color = Color.red;
@@ -107,8 +108,9 @@ public class playerController : MonoBehaviour {
         
         totalPickUps = GameObject.FindGameObjectsWithTag("PickUp").Length;
         r2body = GetComponent<Rigidbody2D>();
-        score = gameManager.instance.getScore();
-        healt = gameManager.instance.getHp();
+        gameManager.getInstance().readGameData();
+        score = gameManager.getInstance().getScore();
+        healt = gameManager.getInstance().getHp();
         scoreTxt.text = "Score " + score;
         calibrateAccelerometer();
     }

@@ -60,6 +60,10 @@ public class gameManager : MonoBehaviour {
         if (PlayerPrefs.HasKey("currentHp"))
         {
             currentHp = PlayerPrefs.GetInt("currentHp");
+            if (currentHp == 0)
+            {
+                currentHp = 50;
+            }
         }
         if (PlayerPrefs.HasKey("currentLevel"))
         {
