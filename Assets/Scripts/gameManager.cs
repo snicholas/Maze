@@ -22,7 +22,7 @@ public class gameManager : MonoBehaviour {
             instance = this;
             currentScore = 0;
             currentLevel = 1;
-            currentHp = 1;
+            currentHp = 20;
             readGameData();
         }
         //If instance already exists and it's not this:
@@ -38,7 +38,7 @@ public class gameManager : MonoBehaviour {
     }
     public void writeGameData(bool saveStats)
     {
-        PlayerPrefs.SetInt("currentHp", saveStats ? currentHp : 50);
+        PlayerPrefs.SetInt("currentHp", saveStats ? currentHp : 20);
         PlayerPrefs.SetInt("currentLevel", saveStats ? currentLevel : 0);
         PlayerPrefs.SetInt("currentScore", saveStats ? currentScore : 0);
         if (!saveStats)
@@ -69,6 +69,7 @@ public class gameManager : MonoBehaviour {
         {
             currentScore = PlayerPrefs.GetInt("currentScore");
         }
+        
     }
     public int getScore()
     {

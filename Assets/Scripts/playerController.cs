@@ -4,7 +4,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 //using UnityEngine.Advertisements;
 
-public class playerController : MonoBehaviour {
+public class playerController : MonoBehaviour
+{
     public GameObject pausePanel;
     public float speedMult;
     public float maxSpeed;
@@ -30,7 +31,7 @@ public class playerController : MonoBehaviour {
     }
     void lifeUpDown(int hp)
     {
-        healt+= hp;
+        healt += hp;
         if (healt <= 0)
         {
             //gameOver
@@ -41,7 +42,8 @@ public class playerController : MonoBehaviour {
             gameManager.getInstance().setHp(0);
             gameManager.getInstance().writeGameData(false);
             SceneManager.LoadScene("gameOver");
-        }else if (healt > maxHealt)
+        }
+        else if (healt > maxHealt)
         {
             healt = maxHealt;
         }
@@ -78,7 +80,8 @@ public class playerController : MonoBehaviour {
             gameManager.getInstance().setHp(healt);
             gameManager.getInstance().writeGameData(true);
             pauseGame();
-        }else
+        }
+        else
         {
             resumeGame();
         }
@@ -102,9 +105,9 @@ public class playerController : MonoBehaviour {
     //Finally how you get the accelerometer input
     Vector3 _InputDir;
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         gameController.SendMessage("generateNextLevel");
-        
         totalPickUps = GameObject.FindGameObjectsWithTag("PickUp").Length;
         r2body = GetComponent<Rigidbody2D>();
         score = gameManager.instance.getScore();
@@ -112,18 +115,23 @@ public class playerController : MonoBehaviour {
         scoreTxt.text = "Score " + score;
         calibrateAccelerometer();
     }
-	void LateUpdate()
+    void LateUpdate()
     {
-        if (totalPickUps == score )//&& Input.GetAxis("Fire1") != 0)
+        if (totalPickUps == score)//&& Input.GetAxis("Fire1") != 0)
         {
             //SceneManager.LoadScene("MainMenu");
             totalPickUps += GameObject.FindGameObjectsWithTag("PickUp").Length;
         }
         scoreTxt.text = "Score " + score + "\nHP: " + healt;
     }
-    
+    void Update()
+    {
+        transform.Rotate(new Vector3(0, 0, 0));
+        transform.Rotate(new Vector3(0, 0, 45) * Time.deltaTime);
+    }
     // Update is called once per frame
-    void FixedUpdate () {
+    void FixedUpdate()
+    {
         if (isInPlay)
         {
 #if UNITY_ANDROID || UNITY_IPHONE
@@ -133,10 +141,10 @@ public class playerController : MonoBehaviour {
             r2body.velocity = movement * speedMult;
 
 #else
-        float horizMov = Input.GetAxisRaw("Horizontal");
-        float vertMov = Input.GetAxisRaw("Vertical");
-        r2body.AddForce(new Vector2(horizMov * speedMult, vertMov * speedMult));
-
+            float horizMov = Input.GetAxisRaw("Horizontal");
+            float vertMov = Input.GetAxisRaw("Vertical");
+            r2body.AddForce(new Vector2(horizMov * speedMult, vertMov * speedMult));
+            
 #endif
             if (Mathf.Abs(r2body.velocity.x) > maxSpeed || Mathf.Abs(r2body.velocity.y) > maxSpeed)
             {
@@ -165,5 +173,5 @@ public class playerController : MonoBehaviour {
             gameController.SendMessage("generateNextLevel");
         }
     }
-    
+
 }

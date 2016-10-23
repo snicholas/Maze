@@ -7,14 +7,19 @@ public class trapController : MonoBehaviour {
     private SpriteRenderer spRnd;
     private bool fadeIn = true;
     private Color precColor;
+    private Vector2 movDir;
+    float speed = 2.5f;
+    Rigidbody2D r2body;
+    float lastChange = -1000f;
     // Use this for initialization
     void Awake()
     {
-        
         spRnd = gameObject.GetComponent<SpriteRenderer>();
         precColor = spRnd.color;
         precColor.a = 0f;
         spRnd.color = precColor;
+        movDir = new Vector2(speed, speed);
+        r2body = GetComponent<Rigidbody2D>();
     }
     // Use this for initialization
     void Update () {
@@ -37,12 +42,38 @@ public class trapController : MonoBehaviour {
                 fadeIn = true;
             }
         }
-        spRnd.color = precColor;
+        spRnd.color = precColor;        
+    }
+    void FixedUpdate()
+    {
+        if ((Time.time - lastChange) > 1)
+        {
+            lastChange = Time.time;
+            if (((int)lastChange) % 2 == 0)
+            {
+                movDir.x *= -1;
+            }
+            else
+            {
+                movDir.y *= -1;
+            }
+            r2body.velocity = movDir;
+        }
+        //else
+        //{
+        /*r2body.AddForce(movDir);
+        if (Mathf.Abs(r2body.velocity.x) > maxSpeed || Mathf.Abs(r2body.velocity.y) > maxSpeed)
+        {
+            Vector3 newVelocity = r2body.velocity.normalized;
+            newVelocity *= maxSpeed;
+            r2body.velocity = newVelocity;
+        }*/
+        //}
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && precColor.a>=0.4)
+        if (other.CompareTag("Player") && precColor.a>=0.25)
         {
             if (type == 1)
             {
