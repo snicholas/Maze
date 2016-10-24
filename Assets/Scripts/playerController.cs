@@ -24,7 +24,7 @@ public class playerController : MonoBehaviour
     void setTimeText(int sec)
     {
         timeTxt.text = "Time: " + sec.ToString();
-        timeTxt.color = new Color(0, 255, 23, 255);
+        timeTxt.color = Color.blue;
         if (sec < 10)
         {
             timeTxt.color = Color.red;
@@ -41,6 +41,7 @@ public class playerController : MonoBehaviour
             gameManager.getInstance().setLevel(0);
             gameManager.getInstance().setScore(score);
             gameManager.getInstance().setHp(0);
+            gameManager.getInstance().setCanContinue(false);
             gameManager.getInstance().writeGameData(false);
             SceneManager.LoadScene("gameOver");
         }
@@ -64,6 +65,7 @@ public class playerController : MonoBehaviour
         gameManager.getInstance().setLevel(level);
         gameManager.getInstance().setScore(score);
         gameManager.getInstance().setHp(healt);
+        gameManager.getInstance().setCanContinue(true);
         gameManager.getInstance().writeGameData(true);
     }
     public void resumeGame()
@@ -71,6 +73,11 @@ public class playerController : MonoBehaviour
         gameObject.SetActive(true);
         pausePanel.SetActive(false);
         calibrateAccelerometer();
+    }
+    public void toMainMenu()
+    {
+        pauseGame();
+        SceneManager.LoadScene("MainMenu");
     }
     void OnApplicationPause(bool pause)
     {
@@ -116,6 +123,7 @@ public class playerController : MonoBehaviour
         healt = gameManager.getInstance().getHp();
         scoreTxt.text = "Score " + score;
         calibrateAccelerometer();
+        gameManager.getInstance().setCanContinue(true);
     }
     void LateUpdate()
     {

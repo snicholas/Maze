@@ -6,7 +6,7 @@ public class gameManager : MonoBehaviour {
     private int currentScore = 0;
     private int currentLevel = 1;
     private int currentHp = 1;
-    //private bool canContinue = false;
+    private bool canContinue = false;
     // Use this for initialization
     public static gameManager getInstance()
     {
@@ -20,19 +20,18 @@ public class gameManager : MonoBehaviour {
         {
             //if not, set instance to this
             instance = this;
-            currentScore = 0;
-            currentLevel = 1;
-            currentHp = 20;
+            this.currentScore = 0;
+            this.currentLevel = 1;
+            this.currentHp = 20;
+            this.canContinue = false;
             readGameData();
         }
         //If instance already exists and it's not this:
         else if (instance != this)
         {
-
             //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(gameObject);
         }
-        
         //Sets this to not be destroyed when reloading scene
         DontDestroyOnLoad(gameObject);
     }
@@ -41,6 +40,7 @@ public class gameManager : MonoBehaviour {
         PlayerPrefs.SetInt("currentHp", saveStats ? currentHp : 20);
         PlayerPrefs.SetInt("currentLevel", saveStats ? currentLevel : 0);
         PlayerPrefs.SetInt("currentScore", saveStats ? currentScore : 0);
+        PlayerPrefs.SetInt("canContinue", saveStats ? (canContinue ? 1 : 0) : 0);
         if (!saveStats)
         {
             int highScore = 0;
@@ -73,7 +73,15 @@ public class gameManager : MonoBehaviour {
         {
             currentScore = PlayerPrefs.GetInt("currentScore");
         }
-        
+        if (PlayerPrefs.HasKey("canContinue"))
+        {
+            canContinue = PlayerPrefs.GetInt("canContinue") == 1;
+        }
+
+    }
+    public bool getCanContinue()
+    {
+        return canContinue;
     }
     public int getScore()
     {
@@ -99,9 +107,9 @@ public class gameManager : MonoBehaviour {
     {
         currentHp = hp;
     }
-    /*void setCanContinue(bool can)
+    public void setCanContinue(bool can)
     {
         canContinue = can;
-    }*/
+    }
 
 }

@@ -8,7 +8,7 @@ public class trapController : MonoBehaviour {
     private bool fadeIn = true;
     private Color precColor;
     private Vector2 movDir;
-    float speed = 2.5f;
+    float speed = 3.5f;
     Rigidbody2D r2body;
     float lastChange = -1000f;
     // Use this for initialization
