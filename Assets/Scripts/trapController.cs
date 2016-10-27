@@ -18,7 +18,9 @@ public class trapController : MonoBehaviour {
         precColor = spRnd.color;
         precColor.a = 0f;
         spRnd.color = precColor;
-        movDir = new Vector2(speed, speed);
+        float xSpeed = ((int)Random.Range(0,100) % 2 == 0) ? speed : -speed;
+        float ySpeed = ((int)Random.Range(0, 100) % 2 == 0) ? speed : -speed;
+        movDir = new Vector2(xSpeed, ySpeed);
         r2body = GetComponent<Rigidbody2D>();
     }
     // Use this for initialization

@@ -20,6 +20,9 @@ public class gameController : MonoBehaviour
     private float elapsedTime = 0;
     private float levelMaxTime = 5;
     private Maze maze = null;
+
+    private Transform levelEnd;
+    private ParticleSystem endOnPS, endOffPS;
     // Use this for initialization
     void Start()
     {
@@ -45,6 +48,17 @@ public class gameController : MonoBehaviour
                 gameManager.getInstance().setHp(0);
                 gameManager.getInstance().writeGameData(false);
                 SceneManager.LoadScene("gameOver");
+            }
+            else
+            {
+                //controllo quanti pickup ci sono
+                //se 0 sblocco la fine del livello
+                GameObject[] pickups = GameObject.FindGameObjectsWithTag("PickUp");
+                if (pickups.Length == 0)
+                {
+                    endOffPS.Stop();
+                    endOnPS.Play();
+                }
             }
         }
     }
@@ -186,12 +200,18 @@ public class gameController : MonoBehaviour
         }
         if (!levelEndPlaced)
         {
-            Transform levelEnd = Instantiate(levels[5]);
+            levelEnd = Instantiate(levels[5]);
             float rtx = xOff;
             float rty = yOff;
             levelEnd.position = new Vector2(rtx, rty);
             levelEnd.parent = level.transform;
             levelEndPlaced = true;
+            //levelEnd.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+            //levelEnd.gameObject.SetActive(false);
+            endOnPS = (ParticleSystem)GameObject.FindGameObjectWithTag("greenFinishLane").GetComponent<ParticleSystem>();
+            endOffPS = (ParticleSystem)GameObject.FindGameObjectWithTag("redFinishLane").GetComponent<ParticleSystem>();
+            endOnPS.Stop();
+            endOffPS.Play();
         }
     }
     void OnApplicationQuit()
