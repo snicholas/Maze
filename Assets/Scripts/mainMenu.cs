@@ -9,7 +9,7 @@ public class mainMenu : MonoBehaviour {
     void Start () {
         Screen.sleepTimeout = SleepTimeout.SystemSetting;
         gameManager.getInstance().readGameData();
-        if (gameManager.getInstance().getCanContinue())
+        if (!gameManager.getInstance().getCanContinue())
         {
             continueBtn.gameObject.SetActive(false);
             startBtn.transform.position = new Vector3(startBtn.transform.position.x, 0, startBtn.transform.position.z);

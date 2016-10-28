@@ -16,13 +16,14 @@ public class gameController : MonoBehaviour
     public float wallOffsetY = 17.5F;
 
     private playerController pController;
-    public int timePerRoom = 5;
+    public int timePerRoom = 4;
     private float elapsedTime = 0;
     private float levelMaxTime = 5;
     private Maze maze = null;
 
     private Transform levelEnd;
     private ParticleSystem endOnPS, endOffPS;
+    public bool levelEndEnabled = false;
     // Use this for initialization
     void Start()
     {
@@ -31,6 +32,7 @@ public class gameController : MonoBehaviour
         pController = player.GetComponent<playerController>();
         currentLevel = gameManager.getInstance().getLevel();
         pController.level = currentLevel;
+        levelEndEnabled = false;
         //generateNextLevel();
     }
 
@@ -58,6 +60,7 @@ public class gameController : MonoBehaviour
                 {
                     endOffPS.Stop();
                     endOnPS.Play();
+                    levelEndEnabled = true;
                 }
             }
         }

@@ -9,7 +9,7 @@ public class playerController : MonoBehaviour
     public GameObject pausePanel;
     public float speedMult;
     public float maxSpeed;
-    public GameObject gameController;
+    public gameController gController;
     public Text scoreTxt;
     public Text timeTxt;
     public int healt = 100;
@@ -63,7 +63,9 @@ public class playerController : MonoBehaviour
         gameObject.SetActive(false);
         pausePanel.SetActive(true);
         gameManager.getInstance().setLevel(level);
+        score = gameManager.getInstance().getScore();
         gameManager.getInstance().setScore(score);
+        healt = gameManager.getInstance().getHp();
         gameManager.getInstance().setHp(healt);
         gameManager.getInstance().setCanContinue(true);
         gameManager.getInstance().writeGameData(true);
@@ -83,10 +85,6 @@ public class playerController : MonoBehaviour
     {
         if (pause)
         {
-            gameManager.getInstance().setLevel(level);
-            gameManager.getInstance().setScore(score);
-            gameManager.getInstance().setHp(healt);
-            gameManager.getInstance().writeGameData(true);
             pauseGame();
         }
         else
@@ -115,7 +113,7 @@ public class playerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        gameController.SendMessage("generateNextLevel");
+        gController.SendMessage("generateNextLevel");
         totalPickUps = GameObject.FindGameObjectsWithTag("PickUp").Length;
         r2body = GetComponent<Rigidbody2D>();
         gameManager.getInstance().readGameData();
@@ -179,8 +177,11 @@ public class playerController : MonoBehaviour
         }
         else if (other.CompareTag("Finish"))
         {
-            lifeUpDown(+5);
-            gameController.SendMessage("generateNextLevel");
+            if (gController.levelEndEnabled)
+            {
+                score += 5;
+                gController.SendMessage("generateNextLevel");
+            }
         }
     }
 
