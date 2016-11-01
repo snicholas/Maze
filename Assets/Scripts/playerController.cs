@@ -113,7 +113,7 @@ public class playerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        gController.SendMessage("generateNextLevel");
+        gController.SendMessage("generateNextLevel",false);
         totalPickUps = GameObject.FindGameObjectsWithTag("PickUp").Length;
         r2body = GetComponent<Rigidbody2D>();
         gameManager.getInstance().readGameData();
@@ -180,7 +180,7 @@ public class playerController : MonoBehaviour
             if (gController.levelEndEnabled)
             {
                 score += 5;
-                gController.SendMessage("generateNextLevel");
+                gController.SendMessage("generateNextLevel", true);
             }
         }
     }

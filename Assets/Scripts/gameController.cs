@@ -66,10 +66,10 @@ public class gameController : MonoBehaviour
         }
     }
     
-    void generateNextLevel()
+    void generateNextLevel(bool newLevel)
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        currentLevel++;
+        if (newLevel) { currentLevel++; }
         pController.level = currentLevel;
         foreach (Transform child in level.transform)
         {
@@ -84,7 +84,6 @@ public class gameController : MonoBehaviour
         player.SetActive(true);
         level.SetActive(true);
         elapsedTime = 0;
-
     }
     void getNewXY(ref List<float> xUsed, ref List<float> yUsed, ref float newX, ref float newY)
     {
