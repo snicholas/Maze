@@ -25,7 +25,7 @@ public class mainMenu : MonoBehaviour {
     {
         gameManager.getInstance().setLevel(1);
         gameManager.getInstance().setScore(0);
-        gameManager.getInstance().setHp(20);
+        gameManager.getInstance().setHp(2);
         gameManager.getInstance().writeGameData(true);
         SceneManager.LoadScene("level0");
     }

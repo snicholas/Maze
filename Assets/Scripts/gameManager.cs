@@ -22,7 +22,7 @@ public class gameManager : MonoBehaviour {
             instance = this;
             this.currentScore = 0;
             this.currentLevel = 1;
-            this.currentHp = 20;
+            this.currentHp = 2;
             this.canContinue = false;
             readGameData();
         }
@@ -37,7 +37,7 @@ public class gameManager : MonoBehaviour {
     }
     public void writeGameData(bool saveStats)
     {
-        PlayerPrefs.SetInt("currentHp", saveStats ? currentHp : 20);
+        PlayerPrefs.SetInt("currentHp", saveStats ? currentHp : 2);
         PlayerPrefs.SetInt("currentLevel", saveStats ? currentLevel : 0);
         PlayerPrefs.SetInt("currentScore", saveStats ? currentScore : 0);
         PlayerPrefs.SetInt("canContinue", saveStats ? (canContinue ? 1 : 0) : 0);
@@ -62,7 +62,7 @@ public class gameManager : MonoBehaviour {
             currentHp = PlayerPrefs.GetInt("currentHp");
             if (currentHp == 0)
             {
-                currentHp = 50;
+                currentHp = 2;
             }
         }
         if (PlayerPrefs.HasKey("currentLevel"))

@@ -27,6 +27,7 @@ public class gameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        
         currentLevel = 0;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         pController = player.GetComponent<playerController>();
@@ -51,15 +52,19 @@ public class gameController : MonoBehaviour
                 gameManager.getInstance().writeGameData(false);
                 SceneManager.LoadScene("gameOver");
             }
-            else
+            else if(levelEndEnabled==false)
             {
                 //controllo quanti pickup ci sono
                 //se 0 sblocco la fine del livello
                 GameObject[] pickups = GameObject.FindGameObjectsWithTag("PickUp");
                 if (pickups.Length == 0)
                 {
-                    endOffPS.Stop();
-                    endOnPS.Play();
+                    enableEmission(true, endOnPS);
+                    
+                    if (endOffPS != null && endOffPS.IsAlive() && endOffPS.isPlaying)
+                    {
+                        enableEmission(false, endOffPS);
+                    }
                     levelEndEnabled = true;
                 }
             }
@@ -73,6 +78,7 @@ public class gameController : MonoBehaviour
         pController.level = currentLevel;
         foreach (Transform child in level.transform)
         {
+            child.gameObject.SetActive(false);
             Destroy(child.gameObject);
         }
         generateMaze(currentLevel);
@@ -83,6 +89,9 @@ public class gameController : MonoBehaviour
         level.SetActive(false);
         player.SetActive(true);
         level.SetActive(true);
+        enableEmission(false, endOnPS);
+        enableEmission(true, endOffPS);
+        levelEndEnabled = false;
         elapsedTime = 0;
     }
     void getNewXY(ref List<float> xUsed, ref List<float> yUsed, ref float newX, ref float newY)
@@ -169,7 +178,7 @@ public class gameController : MonoBehaviour
                         pickup.parent = level.transform;
                     }
                     int _rnd = x == 0 && y == 0 ? 0 : Random.Range(0, 100);
-                    if (_rnd % 5 < 3 && traps > 0 && (x > 0 || y > 0))
+                    if ( traps > 0 && (x > 0 || y > 0))
                     {
                         Transform trap1 = Instantiate(levels[3]);
                         float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
@@ -179,7 +188,7 @@ public class gameController : MonoBehaviour
                         trap1.parent = level.transform;
                         traps--;
                     }
-                    else if (_rnd % 7 < 4 && hrec > 0 && (x > 0 || y > 0))
+                    else if ((_rnd % 5 < 3 && hrec > 0 && (x > 0 || y > 0))||(x==xSize-1 && y==ySize-1 && hrec>0))
                     {
                         Transform healtCharge = Instantiate(levels[4]);
                         float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
@@ -210,11 +219,16 @@ public class gameController : MonoBehaviour
             levelEndPlaced = true;
             //levelEnd.gameObject.GetComponent<CircleCollider2D>().enabled = false;
             //levelEnd.gameObject.SetActive(false);
-            endOnPS = (ParticleSystem)GameObject.FindGameObjectWithTag("greenFinishLane").GetComponent<ParticleSystem>();
-            endOffPS = (ParticleSystem)GameObject.FindGameObjectWithTag("redFinishLane").GetComponent<ParticleSystem>();
-            endOnPS.Stop();
-            endOffPS.Play();
+            endOnPS = GameObject.FindGameObjectWithTag("greenFinishLane").GetComponent<ParticleSystem>();
+            endOffPS = GameObject.FindGameObjectWithTag("redFinishLane").GetComponent<ParticleSystem>();
+            enableEmission(false,endOnPS);
+            enableEmission(true, endOffPS);
         }
+    }
+    void enableEmission(bool enable, ParticleSystem ps)
+    {
+        ParticleSystem.EmissionModule em = ps.emission;
+        em.enabled = enable;
     }
     void OnApplicationQuit()
     {

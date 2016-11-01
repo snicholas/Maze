@@ -16,17 +16,17 @@ public class trapController : MonoBehaviour {
     {
         spRnd = gameObject.GetComponent<SpriteRenderer>();
         precColor = spRnd.color;
-        precColor.a = 0f;
+        precColor.a = 1f;
         spRnd.color = precColor;
+        speed = Random.Range(2.5f, 5.5f);
         float xSpeed = ((int)Random.Range(0,100) % 2 == 0) ? speed : -speed;
         float ySpeed = ((int)Random.Range(0, 100) % 2 == 0) ? speed : -speed;
         movDir = new Vector2(xSpeed, ySpeed);
         r2body = GetComponent<Rigidbody2D>();
     }
-    // Use this for initialization
     void Update () {
         transform.Rotate(new Vector3(0, 0, 45) * Time.deltaTime);
-        if (fadeIn)
+        /*if (fadeIn)
         {
             precColor.a += 0.5f * Time.deltaTime;
             if (precColor.a >= 1)
@@ -44,7 +44,7 @@ public class trapController : MonoBehaviour {
                 fadeIn = true;
             }
         }
-        spRnd.color = precColor;        
+        spRnd.color = precColor;    */    
     }
     void FixedUpdate()
     {
@@ -61,16 +61,6 @@ public class trapController : MonoBehaviour {
             }
             r2body.velocity = movDir;
         }
-        //else
-        //{
-        /*r2body.AddForce(movDir);
-        if (Mathf.Abs(r2body.velocity.x) > maxSpeed || Mathf.Abs(r2body.velocity.y) > maxSpeed)
-        {
-            Vector3 newVelocity = r2body.velocity.normalized;
-            newVelocity *= maxSpeed;
-            r2body.velocity = newVelocity;
-        }*/
-        //}
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -79,14 +69,13 @@ public class trapController : MonoBehaviour {
         {
             if (type == 1)
             {
-                other.gameObject.SendMessage("lifeUpDown", -10);
+                other.gameObject.SendMessage("lifeUpDown", -1);
                 Destroy(gameObject);
             }else if (type == 2)
             {
-                other.gameObject.SendMessage("lifeUpDown", 10);
+                other.gameObject.SendMessage("lifeUpDown", 1);
                 Destroy(gameObject);
             }
         }
-        //Debug.Log("Trap trig");
     }
 }

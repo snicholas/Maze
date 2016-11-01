@@ -11,18 +11,23 @@ public class playerController : MonoBehaviour
     public float maxSpeed;
     public gameController gController;
     public Text scoreTxt;
+    public Text hpTxt;
+    public Text pickupTxt;
     public Text timeTxt;
-    public int healt = 100;
-    public int maxHealt = 100;
+    public int healt = 2;
+    public int maxHealt = 5;
+    int curPickup = 0;
+    int totPickup = 0;
     Rigidbody2D r2body;
     public int score = 0;
     public int level = 0;
-    int totalPickUps;
     Matrix4x4 calibrationMatrix;
     Vector3 wantedDeadZone = Vector3.zero;
     public bool isInPlay = false;
+    int remainingTime = 0;
     void setTimeText(int sec)
     {
+        remainingTime = sec;
         timeTxt.text = "Time: " + sec.ToString();
         timeTxt.color = Color.blue;
         if (sec < 10)
@@ -48,7 +53,23 @@ public class playerController : MonoBehaviour
         else if (healt > maxHealt)
         {
             healt = maxHealt;
+            score += 5;
         }
+        updateHealt();
+    }
+    void updateHealt()
+    {
+        hpTxt.text = "X " + healt;
+    }
+    void updatePickUp()
+    {
+        pickupTxt.text = curPickup + "/" + totPickup;
+    }
+    void setStartPickup()
+    {
+        curPickup = 0;
+        totPickup = GameObject.FindGameObjectsWithTag("PickUp").Length;
+        updatePickUp();
     }
     //public void ShowAd()
     //{
@@ -114,7 +135,7 @@ public class playerController : MonoBehaviour
     void Start()
     {
         gController.SendMessage("generateNextLevel",false);
-        totalPickUps = GameObject.FindGameObjectsWithTag("PickUp").Length;
+        setStartPickup();
         r2body = GetComponent<Rigidbody2D>();
         gameManager.getInstance().readGameData();
         score = gameManager.getInstance().getScore();
@@ -122,15 +143,14 @@ public class playerController : MonoBehaviour
         scoreTxt.text = "Score " + score;
         calibrateAccelerometer();
         gameManager.getInstance().setCanContinue(true);
+        updatePickUp();
+        updateHealt();
     }
     void LateUpdate()
     {
-        if (totalPickUps == score)//&& Input.GetAxis("Fire1") != 0)
-        {
-            //SceneManager.LoadScene("MainMenu");
-            totalPickUps += GameObject.FindGameObjectsWithTag("PickUp").Length;
-        }
-        scoreTxt.text = "Score " + score + "\nHP: " + healt;
+        scoreTxt.text = "Score " + score;
+        updatePickUp();
+        updateHealt();
     }
     void Update()
     {
@@ -170,16 +190,19 @@ public class playerController : MonoBehaviour
             //DestroyImmediate(other.gameObject);
             other.gameObject.SetActive(false);
             score++;
+            curPickup++;
+            updatePickUp();
         }
         else if (other.CompareTag("Wall"))
         {
-            lifeUpDown(-1);
+            if (score > 5) { score -= 5; }
         }
         else if (other.CompareTag("Finish"))
         {
             if (gController.levelEndEnabled)
             {
                 score += 5;
+                score += remainingTime;
                 gController.SendMessage("generateNextLevel", true);
             }
         }
