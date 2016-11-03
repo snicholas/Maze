@@ -66,6 +66,7 @@ public class gameController : MonoBehaviour
                         enableEmission(false, endOffPS);
                     }
                     levelEndEnabled = true;
+                    player.SendMessage("showNL");
                 }
             }
         }

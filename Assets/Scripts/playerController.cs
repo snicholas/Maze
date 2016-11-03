@@ -16,6 +16,8 @@ public class playerController : MonoBehaviour
     public Text timeTxt;
     public int healt = 2;
     public int maxHealt = 5;
+    public Animator animHurry, animNextLvl;
+    
     int curPickup = 0;
     int totPickup = 0;
     Rigidbody2D r2body;
@@ -33,8 +35,23 @@ public class playerController : MonoBehaviour
         if (sec < 10)
         {
             timeTxt.color = Color.red;
+            StartCoroutine(playAnimation(animHurry, "showHurryUp"));
         }
     }
+    void ShowNL()
+    {
+        StartCoroutine(playAnimation(animNextLvl, "ShowNL"));
+    }
+
+    private IEnumerator playAnimation(Animator anim, string trigger)
+    {
+        anim.SetBool(trigger, true);
+        yield return new WaitForSeconds(3f);
+        anim.SetBool(trigger, false);
+        yield return null;
+    }
+
+
     void lifeUpDown(int hp)
     {
         healt += hp;
@@ -204,6 +221,7 @@ public class playerController : MonoBehaviour
                 score += 5;
                 score += remainingTime;
                 gController.SendMessage("generateNextLevel", true);
+                setStartPickup();
             }
         }
     }
