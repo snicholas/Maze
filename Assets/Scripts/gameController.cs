@@ -52,6 +52,16 @@ public class gameController : MonoBehaviour
                 gameManager.getInstance().writeGameData(false);
                 SceneManager.LoadScene("gameOver");
             }
+            else if ((int)((levelMaxTime - elapsedTime)) <= 15)
+            {
+                enableEmission(true, endOnPS);
+                if (endOffPS != null && endOffPS.IsAlive() && endOffPS.isPlaying)
+                {
+                    enableEmission(false, endOffPS);
+                }
+                levelEndEnabled = true;
+                player.SendMessage("showNL");
+            }
             else if(levelEndEnabled==false)
             {
                 //controllo quanti pickup ci sono
@@ -94,6 +104,7 @@ public class gameController : MonoBehaviour
         enableEmission(true, endOffPS);
         levelEndEnabled = false;
         elapsedTime = 0;
+        player.SendMessage("setTimeText", (int)((levelMaxTime - elapsedTime)));
     }
     void getNewXY(ref List<float> xUsed, ref List<float> yUsed, ref float newX, ref float newY)
     {

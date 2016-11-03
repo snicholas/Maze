@@ -16,7 +16,7 @@ public class playerController : MonoBehaviour
     public Text timeTxt;
     public int healt = 2;
     public int maxHealt = 5;
-    public Animator animHurry, animNextLvl;
+    public Animator animHurry, animNextLvl, animCountDown;
     
     int curPickup = 0;
     int totPickup = 0;
@@ -35,19 +35,20 @@ public class playerController : MonoBehaviour
         if (sec < 10)
         {
             timeTxt.color = Color.red;
-            StartCoroutine(playAnimation(animHurry, "showHurryUp"));
+            StartCoroutine(playAnimation(animHurry, "showHurryUp", 2f));
         }
     }
-    void ShowNL()
+    void showNL()
     {
-        StartCoroutine(playAnimation(animNextLvl, "ShowNL"));
+        StartCoroutine(playAnimation(animNextLvl, "showNL", 2f));
     }
 
-    private IEnumerator playAnimation(Animator anim, string trigger)
+    private IEnumerator playAnimation(Animator anim, string trigger, float waitTime)
     {
         anim.SetBool(trigger, true);
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(waitTime);
         anim.SetBool(trigger, false);
+        isInPlay = true;
         yield return null;
     }
 
@@ -95,6 +96,14 @@ public class playerController : MonoBehaviour
     //        Advertisement.Show();
     //    }
     //}
+    void startCountDown()
+    {
+        isInPlay = false;
+        animCountDown.playbackTime = 0;
+        StartCoroutine(playAnimation(animCountDown, "showCountDown",3.5f));
+        
+    }
+
     public void pauseGame()
     {
         isInPlay = false;
@@ -151,6 +160,8 @@ public class playerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        animHurry.SetBool("showHurryUp", false);
+        animNextLvl.SetBool("showNL", false);
         gController.SendMessage("generateNextLevel",false);
         setStartPickup();
         r2body = GetComponent<Rigidbody2D>();
@@ -162,6 +173,7 @@ public class playerController : MonoBehaviour
         gameManager.getInstance().setCanContinue(true);
         updatePickUp();
         updateHealt();
+        startCountDown();
     }
     void LateUpdate()
     {
@@ -218,10 +230,13 @@ public class playerController : MonoBehaviour
         {
             if (gController.levelEndEnabled)
             {
+                animHurry.SetBool("showHurryUp", false);
+                animNextLvl.SetBool("showNL", false);
                 score += 5;
                 score += remainingTime;
                 gController.SendMessage("generateNextLevel", true);
                 setStartPickup();
+                startCountDown();
             }
         }
     }
