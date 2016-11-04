@@ -107,6 +107,7 @@ public class playerController : MonoBehaviour
     public void pauseGame()
     {
         isInPlay = false;
+        animCountDown.SetBool("showCountDown", false);
         gameObject.SetActive(false);
         pausePanel.SetActive(true);
         gameManager.getInstance().setLevel(level);
@@ -122,6 +123,7 @@ public class playerController : MonoBehaviour
         gameObject.SetActive(true);
         pausePanel.SetActive(false);
         calibrateAccelerometer();
+        startCountDown();
     }
     public void toMainMenu()
     {
@@ -233,7 +235,10 @@ public class playerController : MonoBehaviour
                 animHurry.SetBool("showHurryUp", false);
                 animNextLvl.SetBool("showNL", false);
                 score += 5;
-                score += remainingTime;
+                if (curPickup == totPickup)
+                {
+                    score += remainingTime;
+                }
                 gController.SendMessage("generateNextLevel", true);
                 setStartPickup();
                 startCountDown();
