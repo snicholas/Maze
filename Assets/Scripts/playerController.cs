@@ -110,16 +110,14 @@ public class playerController : MonoBehaviour
         animCountDown.SetBool("showCountDown", false);
         gameObject.SetActive(false);
         pausePanel.SetActive(true);
-        gameManager.getInstance().setLevel(level);
-        score = gameManager.getInstance().getScore();
-        gameManager.getInstance().setScore(score);
-        healt = gameManager.getInstance().getHp();
-        gameManager.getInstance().setHp(healt);
-        gameManager.getInstance().setCanContinue(true);
-        gameManager.getInstance().writeGameData(true);
+        
     }
     public void resumeGame()
     {
+        /*gameManager.getInstance().readGameData();
+        score = gameManager.getInstance().getScore();
+        healt = gameManager.getInstance().getHp();*/
+        scoreTxt.text = "Score " + score;
         gameObject.SetActive(true);
         pausePanel.SetActive(false);
         calibrateAccelerometer();
@@ -127,7 +125,20 @@ public class playerController : MonoBehaviour
     }
     public void toMainMenu()
     {
-        pauseGame();
+        gameManager.getInstance().setLevel(level);
+        score = gameManager.getInstance().getScore();
+        gameManager.getInstance().setScore(score);
+        healt = gameManager.getInstance().getHp();
+        gameManager.getInstance().setHp(healt);
+        if (level > 1)
+        {
+            gameManager.getInstance().setCanContinue(true);
+        }
+        else
+        {
+            gameManager.getInstance().setCanContinue(false);
+        }
+        gameManager.getInstance().writeGameData(true);
         SceneManager.LoadScene("MainMenu");
     }
     void OnApplicationPause(bool pause)
@@ -239,6 +250,12 @@ public class playerController : MonoBehaviour
                 {
                     score += remainingTime;
                 }
+
+                gameManager.getInstance().setLevel(level);
+                gameManager.getInstance().setScore(score);
+                gameManager.getInstance().setHp(healt);
+                gameManager.getInstance().setCanContinue(true);
+                gameManager.getInstance().writeGameData(true);
                 gController.SendMessage("generateNextLevel", true);
                 setStartPickup();
                 startCountDown();

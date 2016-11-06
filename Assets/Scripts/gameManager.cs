@@ -111,5 +111,10 @@ public class gameManager : MonoBehaviour {
     {
         canContinue = can;
     }
-
+    public void tweetBestScore()
+    {
+        string TWITTER_ADDRESS = "http://twitter.com/intent/tweet";
+        Debug.Log(instance.getScore());
+        Application.OpenURL(TWITTER_ADDRESS + "?text=" + WWW.EscapeURL("I Just scored "+instance.getScore()+ " in #UFOMaze <link rel=\"canonical\" href =\"https://play.google.com/store/apps/details?id=com.NicholasSpadaro.UFOMaze\">Download it</link> and beat me!"));
+    }
 }
