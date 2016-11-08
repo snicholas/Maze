@@ -35,11 +35,13 @@ public class playerController : MonoBehaviour
         if (sec < 10)
         {
             timeTxt.color = Color.red;
+            animHurry.gameObject.SetActive(true);
             StartCoroutine(playAnimation(animHurry, "showHurryUp", 2f));
         }
     }
     void showNL()
     {
+        animNextLvl.gameObject.SetActive(true);
         StartCoroutine(playAnimation(animNextLvl, "showNL", 2f));
     }
 
@@ -99,7 +101,8 @@ public class playerController : MonoBehaviour
     void startCountDown()
     {
         isInPlay = false;
-        animCountDown.playbackTime = 0;
+        //animCountDown.playbackTime = 0;
+        animCountDown.gameObject.SetActive(true);
         StartCoroutine(playAnimation(animCountDown, "showCountDown",3.5f));
         
     }
@@ -108,6 +111,7 @@ public class playerController : MonoBehaviour
     {
         isInPlay = false;
         animCountDown.SetBool("showCountDown", false);
+        animCountDown.gameObject.SetActive(false);
         gameObject.SetActive(false);
         pausePanel.SetActive(true);
         
@@ -245,6 +249,8 @@ public class playerController : MonoBehaviour
             {
                 animHurry.SetBool("showHurryUp", false);
                 animNextLvl.SetBool("showNL", false);
+                animHurry.gameObject.SetActive(false);
+                animNextLvl.gameObject.SetActive(false);
                 score += 5;
                 if (curPickup == totPickup)
                 {

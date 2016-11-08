@@ -7,6 +7,7 @@ public class gameManager : MonoBehaviour {
     private int currentLevel = 1;
     private int currentHp = 1;
     private bool canContinue = false;
+    private int highesScore = 0;
     // Use this for initialization
     public static gameManager getInstance()
     {
@@ -24,6 +25,7 @@ public class gameManager : MonoBehaviour {
             this.currentLevel = 1;
             this.currentHp = 2;
             this.canContinue = false;
+            this.highesScore = 0;
             readGameData();
         }
         //If instance already exists and it's not this:
@@ -47,11 +49,14 @@ public class gameManager : MonoBehaviour {
             if (PlayerPrefs.HasKey("highestScore"))
             {
                 highScore = PlayerPrefs.GetInt("highestScore");
+                highesScore = highScore;
             }
             if (currentScore > highScore)
             {
                 PlayerPrefs.SetInt("highestScore", currentScore);
+                highesScore = currentScore;
             }
+            
         }
         PlayerPrefs.Save();
     }
@@ -87,6 +92,10 @@ public class gameManager : MonoBehaviour {
     {
         return currentScore;
     }
+    public int getHighestScore()
+    {
+        return highesScore;
+    }
     public int getHp()
     {
         return currentHp;
@@ -113,8 +122,9 @@ public class gameManager : MonoBehaviour {
     }
     public void tweetBestScore()
     {
-        string TWITTER_ADDRESS = "http://twitter.com/intent/tweet";
-        Debug.Log(instance.getScore());
-        Application.OpenURL(TWITTER_ADDRESS + "?text=" + WWW.EscapeURL("I Just scored "+instance.getScore()+ " in #UFOMaze <link rel=\"canonical\" href =\"https://play.google.com/store/apps/details?id=com.NicholasSpadaro.UFOMaze\">Download it</link> and beat me!"));
+        /*string TWITTER_ADDRESS = "http://twitter.com/intent/tweet";
+        Debug.Log(instance.getHighestScore());
+        Application.OpenURL(TWITTER_ADDRESS + "?text=" + WWW.EscapeURL("I Just scored "+instance.getScore()+ " in #UFOMaze <link rel=\"canonical\" href =\"https://play.google.com/store/apps/details?id=com.NicholasSpadaro.UFOMaze\">Download it</link> and beat me!"));*/
+
     }
 }

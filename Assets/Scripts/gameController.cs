@@ -135,7 +135,7 @@ public class gameController : MonoBehaviour
         float yOff = 0;
         float sy = levels[1].GetComponent<Renderer>().bounds.size.y;
         float sx = levels[1].GetComponent<Renderer>().bounds.size.x;
-        int traps = xSize + ySize;
+        int maxTrapPerRoom = 1 + (int)(currentLevel / 2);
         int hrec = (int)(currentLevel * 0.1) + 1;
         bool levelEndPlaced = false;
         for (int y = 0; y < ySize; y++)
@@ -190,15 +190,17 @@ public class gameController : MonoBehaviour
                         pickup.parent = level.transform;
                     }
                     int _rnd = x == 0 && y == 0 ? 0 : Random.Range(0, 100);
-                    if ( traps > 0 && (x > 0 || y > 0))
+                    if (x > 0 || y > 0)
                     {
-                        Transform trap1 = Instantiate(levels[3]);
-                        float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
-                        float rty = -1; //Random.Range(-wallOffsetY * 0.65F, wallOffsetY * 0.65F) + yOff;
-                        getNewXY(ref xUsed, ref yUsed, ref rx, ref ry);
-                        trap1.position = new Vector2(rtx + xOff, rty + yOff);
-                        trap1.parent = level.transform;
-                        traps--;
+                        for (int j = 0; j < ((int)Random.Range(1, maxTrapPerRoom)); j++)
+                        {
+                            Transform trap1 = Instantiate(levels[3]);
+                            float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
+                            float rty = -1; //Random.Range(-wallOffsetY * 0.65F, wallOffsetY * 0.65F) + yOff;
+                            getNewXY(ref xUsed, ref yUsed, ref rx, ref ry);
+                            trap1.position = new Vector2(rtx + xOff, rty + yOff);
+                            trap1.parent = level.transform;
+                        }
                     }
                     else if ((_rnd % 5 < 3 && hrec > 0 && (x > 0 || y > 0))||(x==xSize-1 && y==ySize-1 && hrec>0))
                     {

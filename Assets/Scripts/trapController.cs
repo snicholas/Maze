@@ -5,7 +5,7 @@ public class trapController : MonoBehaviour {
     // ToDo: creare enum per tipi trappola
     public int type;
     private SpriteRenderer spRnd;
-    private bool fadeIn = true;
+    //private bool fadeIn = true;
     private Color precColor;
     private Vector2 movDir;
     float speed = 3.5f;
