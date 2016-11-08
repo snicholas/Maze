@@ -202,7 +202,7 @@ public class gameController : MonoBehaviour
                             trap1.parent = level.transform;
                         }
                     }
-                    else if ((_rnd % 5 < 3 && hrec > 0 && (x > 0 || y > 0))||(x==xSize-1 && y==ySize-1 && hrec>0))
+                    else if (_rnd % 5 < 4 && hrec > 0)
                     {
                         Transform healtCharge = Instantiate(levels[4]);
                         float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
