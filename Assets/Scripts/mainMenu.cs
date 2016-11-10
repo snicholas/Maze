@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using GooglePlayGames;
 
 public class mainMenu : MonoBehaviour {
     public GameObject continueBtn;
@@ -14,13 +15,26 @@ public class mainMenu : MonoBehaviour {
             continueBtn.gameObject.SetActive(false);
             startBtn.transform.position = new Vector3(startBtn.transform.position.x, 0, startBtn.transform.position.z);
         }
+        Social.localUser.Authenticate((bool success) => {
+            // handle success or failure
+            Debug.Log("Authenticated:" +success);
 
+
+        });
     }
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
+    public void showLeaderboard()
+    {
+        PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkIldzv_8IEEAIQBg");
+    }
+    public void showAchievements()
+    {
+        Social.ShowAchievementsUI();
+    }
     public void startNewGame()
     {
         gameManager.getInstance().setLevel(1);

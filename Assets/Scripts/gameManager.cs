@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GooglePlayGames;
+using UnityEngine.SocialPlatforms;
 
 public class gameManager : MonoBehaviour {
     public static gameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
@@ -20,7 +22,10 @@ public class gameManager : MonoBehaviour {
         if (instance == null)
         {
             //if not, set instance to this
+
             instance = this;
+            PlayGamesPlatform.Activate();
+            Debug.Log("PlayGamesPlatform.Activate()");
             this.currentScore = 0;
             this.currentLevel = 1;
             this.currentHp = 2;
@@ -36,6 +41,10 @@ public class gameManager : MonoBehaviour {
         }
         //Sets this to not be destroyed when reloading scene
         DontDestroyOnLoad(gameObject);
+    }
+    void start()
+    {
+        
     }
     public void writeGameData(bool saveStats)
     {
@@ -55,6 +64,9 @@ public class gameManager : MonoBehaviour {
             {
                 PlayerPrefs.SetInt("highestScore", currentScore);
                 highesScore = currentScore;
+                Social.ReportScore(highesScore, "CgkIldzv_8IEEAIQBg", (bool success) => {
+                    // handle success or failure
+                });
             }
             
         }

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using GooglePlayGames;
 //using UnityEngine.Advertisements;
 
 public class playerController : MonoBehaviour
@@ -17,6 +18,9 @@ public class playerController : MonoBehaviour
     public int healt = 2;
     public int maxHealt = 5;
     public Animator animHurry, animNextLvl, animCountDown;
+
+    bool hitted = false;
+    int levelWithoutHit = 0;
     
     int curPickup = 0;
     int totPickup = 0;
@@ -58,6 +62,11 @@ public class playerController : MonoBehaviour
     void lifeUpDown(int hp)
     {
         healt += hp;
+        if (hp < 0)
+        {
+            hitted = true;
+            levelWithoutHit = 0;
+        }
         if (healt <= 0)
         {
             //gameOver
@@ -177,6 +186,7 @@ public class playerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        isInPlay = false;
         animHurry.SetBool("showHurryUp", false);
         animNextLvl.SetBool("showNL", false);
         gController.SendMessage("generateNextLevel",false);
@@ -191,6 +201,7 @@ public class playerController : MonoBehaviour
         updatePickUp();
         updateHealt();
         startCountDown();
+        Debug.Log(gController.currentLevel);
     }
     void LateUpdate()
     {
@@ -256,7 +267,28 @@ public class playerController : MonoBehaviour
                 {
                     score += remainingTime;
                 }
-
+                if (hitted == false)
+                {
+                    levelWithoutHit++;
+                    if (levelWithoutHit == 5)
+                    {
+                        PlayGamesPlatform.Instance.ReportProgress("CgkIldzv_8IEEAIQAw", 100.0f, (bool success) => {
+                            // handle success or failure
+                        });
+                    }else if (levelWithoutHit == 10)
+                    {
+                        PlayGamesPlatform.Instance.ReportProgress("CgkIldzv_8IEEAIQBA", 100.0f, (bool success) => {
+                            // handle success or failure
+                        });
+                    }else if (levelWithoutHit == 20)
+                    {
+                        PlayGamesPlatform.Instance.ReportProgress("CgkIldzv_8IEEAIQBQ", 100.0f, (bool success) => {
+                            // handle success or failure
+                        });
+                    }
+                }
+                isInPlay = false;
+                r2body.velocity = new Vector2(0, 0);
                 gameManager.getInstance().setLevel(level);
                 gameManager.getInstance().setScore(score);
                 gameManager.getInstance().setHp(healt);
@@ -264,6 +296,7 @@ public class playerController : MonoBehaviour
                 gameManager.getInstance().writeGameData(true);
                 gController.SendMessage("generateNextLevel", true);
                 setStartPickup();
+                hitted = false;
                 startCountDown();
             }
         }

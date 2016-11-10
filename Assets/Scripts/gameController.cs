@@ -3,6 +3,7 @@ using System.Collections;
 using MazeGeneration;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using GooglePlayGames;
 
 public class gameController : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class gameController : MonoBehaviour
     public GameObject mainCamera;
     public GameObject level;
     public Transform[] levels; //0:walls, 1:bkg
-    private int currentLevel;
+    public int currentLevel;
     public float wallOffsetX = 14.58F;
     public float wallOffsetY = 17.5F;
 
@@ -85,7 +86,24 @@ public class gameController : MonoBehaviour
     void generateNextLevel(bool newLevel)
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        if (newLevel) { currentLevel++; }
+        if (newLevel) {
+            if (currentLevel == 1)
+            {
+                //var ac = PlayGamesPlatform.Instance.GetAchievement("CgkIldzv_8IEEAIQAQ");
+
+                PlayGamesPlatform.Instance.ReportProgress("CgkIldzv_8IEEAIQAQ", 100.0f, (bool success) => {
+                    // handle success or failure
+                });
+            }else if (currentLevel == 5)
+            {
+                //var ac = PlayGamesPlatform.Instance.GetAchievement("CgkIldzv_8IEEAIQAQ");
+
+                PlayGamesPlatform.Instance.ReportProgress("CgkIldzv_8IEEAIQAg", 100.0f, (bool success) => {
+                    // handle success or failure
+                });
+            }
+            currentLevel++;
+        }
         pController.level = currentLevel;
         foreach (Transform child in level.transform)
         {
@@ -136,6 +154,10 @@ public class gameController : MonoBehaviour
         float sy = levels[1].GetComponent<Renderer>().bounds.size.y;
         float sx = levels[1].GetComponent<Renderer>().bounds.size.x;
         int maxTrapPerRoom = 1 + (int)(currentLevel / 2);
+        if (maxTrapPerRoom > 3)
+        {
+            maxTrapPerRoom = 3;
+        }
         int hrec = (int)(currentLevel * 0.1) + 1;
         bool levelEndPlaced = false;
         for (int y = 0; y < ySize; y++)
