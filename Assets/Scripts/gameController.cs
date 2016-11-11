@@ -223,16 +223,16 @@ public class gameController : MonoBehaviour
                             trap1.position = new Vector2(rtx + xOff, rty + yOff);
                             trap1.parent = level.transform;
                         }
-                    }
-                    else if (_rnd % 5 < 4 && hrec > 0)
-                    {
-                        Transform healtCharge = Instantiate(levels[4]);
-                        float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
-                        float rty = -1; //Random.Range(-wallOffsetY * 0.65F, wallOffsetY * 0.65F) + yOff;
-                        getNewXY(ref xUsed, ref yUsed, ref rx, ref ry);
-                        healtCharge.position = new Vector2(rtx + xOff, rty + yOff);
-                        healtCharge.parent = level.transform;
-                        hrec--;
+                        if (_rnd % 5 < 4 && hrec > 0)
+                        {
+                            Transform healtCharge = Instantiate(levels[4]);
+                            float rtx = -1; //Random.Range(-wallOffsetX * 0.65F, wallOffsetX * 0.65F) + xOff;
+                            float rty = -1; //Random.Range(-wallOffsetY * 0.65F, wallOffsetY * 0.65F) + yOff;
+                            getNewXY(ref xUsed, ref yUsed, ref rx, ref ry);
+                            healtCharge.position = new Vector2(rtx + xOff, rty + yOff);
+                            healtCharge.parent = level.transform;
+                            hrec--;
+                        }
                     }
                 }
                 /*else if(!levelEndPlaced && (_rnd%7>4 || (x==xSize-1 && y == ySize - 1))){

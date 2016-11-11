@@ -10,6 +10,7 @@ public class gameManager : MonoBehaviour {
     private int currentHp = 1;
     private bool canContinue = false;
     private int highesScore = 0;
+    private int levelWithoutHit = 0;
     // Use this for initialization
     public static gameManager getInstance()
     {
@@ -31,6 +32,7 @@ public class gameManager : MonoBehaviour {
             this.currentHp = 2;
             this.canContinue = false;
             this.highesScore = 0;
+            this.levelWithoutHit = 0;
             readGameData();
         }
         //If instance already exists and it's not this:
@@ -52,6 +54,7 @@ public class gameManager : MonoBehaviour {
         PlayerPrefs.SetInt("currentLevel", saveStats ? currentLevel : 0);
         PlayerPrefs.SetInt("currentScore", saveStats ? currentScore : 0);
         PlayerPrefs.SetInt("canContinue", saveStats ? (canContinue ? 1 : 0) : 0);
+        PlayerPrefs.SetInt("levelWithoutHit", saveStats ? levelWithoutHit : 0); 
         if (!saveStats)
         {
             int highScore = 0;
@@ -82,6 +85,11 @@ public class gameManager : MonoBehaviour {
                 currentHp = 2;
             }
         }
+        //levelWithoutHit
+        if (PlayerPrefs.HasKey("levelWithoutHit"))
+        {
+            levelWithoutHit = PlayerPrefs.GetInt("levelWithoutHit");
+        }
         if (PlayerPrefs.HasKey("currentLevel"))
         {
             currentLevel = PlayerPrefs.GetInt("currentLevel");
@@ -95,6 +103,11 @@ public class gameManager : MonoBehaviour {
             canContinue = PlayerPrefs.GetInt("canContinue") == 1;
         }
 
+    }
+    //levelWithoutHit
+    public int getLevelWithoutHit()
+    {
+        return levelWithoutHit;
     }
     public bool getCanContinue()
     {
@@ -119,6 +132,11 @@ public class gameManager : MonoBehaviour {
     public void setScore(int score)
     {
         currentScore = score;
+    }
+    
+    public void setLevelWithoutHit(int levelWithoutHit)
+    {
+        this.levelWithoutHit = levelWithoutHit;
     }
     public void setLevel(int lvl)
     {

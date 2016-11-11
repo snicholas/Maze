@@ -53,10 +53,12 @@ public class playerController : MonoBehaviour
     private IEnumerator playAnimation(Animator anim, string trigger, float waitTime)
     {
         anim.gameObject.SetActive(true);
+        anim.playbackTime = 0;
         anim.SetBool(trigger, true);
         yield return new WaitForSeconds(waitTime);
         anim.SetBool(trigger, false);
         isInPlay = true;
+        anim.playbackTime = 0;
         anim.gameObject.SetActive(false);
         yield return null;
     }
@@ -78,6 +80,7 @@ public class playerController : MonoBehaviour
             gameManager.getInstance().setLevel(0);
             gameManager.getInstance().setScore(score);
             gameManager.getInstance().setHp(0);
+            gameManager.getInstance().setLevelWithoutHit(0);
             gameManager.getInstance().setCanContinue(false);
             gameManager.getInstance().writeGameData(false);
             SceneManager.LoadScene("gameOver");
@@ -115,6 +118,7 @@ public class playerController : MonoBehaviour
         isInPlay = false;
         //animCountDown.playbackTime = 0;
         animCountDown.gameObject.SetActive(true);
+        animCountDown.playbackTime = 0;
         StartCoroutine(playAnimation(animCountDown, "showCountDown",3.5f));
         
     }
@@ -149,6 +153,7 @@ public class playerController : MonoBehaviour
         if (level > 1)
         {
             gameManager.getInstance().setCanContinue(true);
+            gameManager.getInstance().setLevelWithoutHit(levelWithoutHit);
         }
         else
         {
@@ -198,6 +203,7 @@ public class playerController : MonoBehaviour
         gameManager.getInstance().readGameData();
         score = gameManager.getInstance().getScore();
         healt = gameManager.getInstance().getHp();
+        levelWithoutHit= gameManager.getInstance().getLevelWithoutHit();
         scoreTxt.text = "Score " + score;
         calibrateAccelerometer();
         gameManager.getInstance().setCanContinue(true);
@@ -264,6 +270,10 @@ public class playerController : MonoBehaviour
         {
             if (gController.levelEndEnabled)
             {
+                animCountDown.playbackTime = 0;
+                animHurry.playbackTime = 0;
+                animNextLvl.playbackTime = 0;
+
                 animHurry.SetBool("showHurryUp", false);
                 animNextLvl.SetBool("showNL", false);
                 animHurry.gameObject.SetActive(false);
@@ -298,6 +308,7 @@ public class playerController : MonoBehaviour
                 gameManager.getInstance().setLevel(level);
                 gameManager.getInstance().setScore(score);
                 gameManager.getInstance().setHp(healt);
+                gameManager.getInstance().setLevelWithoutHit(levelWithoutHit);
                 gameManager.getInstance().setCanContinue(true);
                 gameManager.getInstance().writeGameData(true);
                 gController.SendMessage("generateNextLevel", true);
