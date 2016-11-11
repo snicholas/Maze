@@ -14,6 +14,7 @@ public class playerController : MonoBehaviour
     public Text scoreTxt;
     public Text hpTxt;
     public Text pickupTxt;
+    public Text levelTxt;
     public Text timeTxt;
     public int healt = 2;
     public int maxHealt = 5;
@@ -51,10 +52,12 @@ public class playerController : MonoBehaviour
 
     private IEnumerator playAnimation(Animator anim, string trigger, float waitTime)
     {
+        anim.gameObject.SetActive(true);
         anim.SetBool(trigger, true);
         yield return new WaitForSeconds(waitTime);
         anim.SetBool(trigger, false);
         isInPlay = true;
+        anim.gameObject.SetActive(false);
         yield return null;
     }
 
@@ -201,7 +204,7 @@ public class playerController : MonoBehaviour
         updatePickUp();
         updateHealt();
         startCountDown();
-        Debug.Log(gController.currentLevel);
+        levelTxt.text = "Level " + gController.currentLevel;
     }
     void LateUpdate()
     {
@@ -219,7 +222,7 @@ public class playerController : MonoBehaviour
     {
         if (isInPlay)
         {
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID
 
             _InputDir = getAccelerometer(Input.acceleration);
             Vector3 movement = new Vector3(_InputDir.x * speedMult, _InputDir.y * speedMult, 0.0f);
@@ -237,6 +240,9 @@ public class playerController : MonoBehaviour
                 newVelocity *= maxSpeed;
                 r2body.velocity = newVelocity;
             }
+        }else
+        {
+            r2body.velocity = new Vector2(0, 0);
         }
 
     }
@@ -298,6 +304,7 @@ public class playerController : MonoBehaviour
                 setStartPickup();
                 hitted = false;
                 startCountDown();
+                levelTxt.text = "Level " + gController.currentLevel;
             }
         }
     }
